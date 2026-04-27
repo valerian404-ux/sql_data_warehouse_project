@@ -1,1 +1,117 @@
+Add stored procedure: bronze.load_bronze
+
+Defines a stored procedure to load raw CSV data into the Bronze layer tables
+(CRM and ERP sources) using BULK INSERT. Includes execution time logging per
+table and basic error handling via TRY/CATCH.
+
+
+EXEC bronze.load_bronze;
+
+
+  create or alter procedure bronze.load_bronze as 
+  begin
+  declare @start_time datetime, @end_time datetime
+  begin try
+	  print '===================================================================';
+	  print 'Loading Bronze Layer';
+	   print '===================================================================';
+
+		print '===================================================================';
+	   print 'loading crm tables';
+		print '===================================================================';
+
+		set @start_time = getdate();
+		
+
+		  bulk insert bronze.crm_cust_info
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\Source.crm\cust_info.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+
+		set @start_time = getdate();
+		 bulk insert bronze.crm_prd_info
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\Source.crm\prd_info.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+
+
+		set @start_time = getdate();
+		 bulk insert bronze.crm_sales_details
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\Source.crm\sales_details.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+
+
+
+		 print '===================================================================';
+		print 'loading erp tables';
+		 print '===================================================================';
+		 set @start_time = getdate();
+		 bulk insert bronze.erp_cust_AZ12
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\source_erp\CUST_AZ12.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+
+		set @start_time = getdate();
+		 bulk insert bronze.erp_LOC_A101
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\source_erp\LOC_A101.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+
+
+		set @start_time = getdate();
+		 bulk insert bronze.erp_PX_CAT_G1V1
+		  from 'C:\Users\Administrator\Downloads\sqlmapproject-sqlmap-1.10.4-4-g39b8ff4\source_erp\PX_CAT_G1V2.csv'
+		  with (
+			firstrow = 2, 
+			fieldterminator = ',',
+			tablock
+		);
+		set @end_time = getdate();
+		print '>> load duration : ' + cast(datediff(second, @start_time, @end_time) as nvarchar) + 'seconds';
+		print '>>-----------------'
+	end try
+	begin catch
+	print 'ERROR OCCOURED WHILE LOADING BRONZE LAYER'
+	end catch
+end;
+
+
+
+
+
+
+
+
 
